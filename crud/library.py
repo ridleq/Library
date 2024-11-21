@@ -1,13 +1,14 @@
 # Класс библиотеки и методы работы с книгами.
 import json
+from typing import List, Optional
 
-from .book import Book
+from models.book import Book
 
 
 class Library:
     def __init__(self, filename='data/library.json'):
         self.filename = filename
-        self.books = self.load_books()
+        self.books: List[Book] = self.load_books()
 
     def load_books(self):
         try:
@@ -28,10 +29,16 @@ class Library:
             json.dump([book.to_dict() for book in self.books], file, indent=4)
 
     def add_book(self, title, author, year, status='в наличии'):
-        book_id = len(self.books) + 1  # Генерация уникального ID.
+        for book in self.books:
+            if book.title == title and book.author == author:
+                return f"\nКнига '{title}' автора {author} уже существует."
+
+        max_id = max((book.id for book in self.books), default=0)
+        book_id = max_id + 1
         new_book = Book(book_id, title, author, year, status)
         self.books.append(new_book)
         self.save_books()
+        return f"\nКнига '{title}' успешно добавлена."
 
     def delete_book(self, book_id):
         book_to_remove = next(
@@ -42,6 +49,9 @@ class Library:
         if book_to_remove:
             self.books.remove(book_to_remove)
             self.save_books()
+            return "Книга успешно удалена."
+        else:
+            return "Книга не найдена!"
 
     def search_book(self, book_search):
         results = []
@@ -59,19 +69,28 @@ class Library:
 
         return results if results else ["Книга не найдена."]
 
-    def update_book_status(self, book_id, new_status):
+    def update_book_status(self, book_id):
         for book in self.books:
             if book.id == book_id:
+                new_status = input("Введите новый статус: ")
                 book.status = new_status
+                self.save_books()
                 return f"Статус книги изменен на '{new_status}'."
+
         return "Книга не найдена."
 
-    def display_books(self):
+    def list_books(self):
+        if not self.books:
+            return "\nСписок книг пуст."
+
+        output = "\nСписок всех книг:\n"
         for book in self.books:
-            print(
-                f"|{book.id}| "
-                f"{book.title} | "
-                f"{book.author} | "
-                f"{book.year} | "
-                f"{book.status} |"
-            )
+            output += (
+                        f"{book.id} | "
+                        f"{book.title} "
+                        f"{book.author} "
+                        f"({book.year}) "
+                        f"{book.status} \n"
+                    )
+
+        return output
