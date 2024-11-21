@@ -52,9 +52,9 @@ class Library:
         if book_to_remove:
             self.books.remove(book_to_remove)
             self.save_books()
-            return "Книга успешно удалена."
+            return "\nКнига успешно удалена."
         else:
-            return "Книга не найдена!"
+            return "\nКнига не найдена!"
 
     def search_book(self, book_search: str) -> List[str]:
         results: List[str] = []
@@ -73,9 +73,17 @@ class Library:
         return results if results else ["Книга не найдена."]
 
     def update_book_status(self, book_id: int) -> str:
+        valid_statuses = ['в наличии', 'выдана']
         for book in self.books:
             if book.id == book_id:
                 new_status = input("Введите новый статус: ")
+
+                if new_status not in valid_statuses:
+                    return "Ошибка: введите корректный статус."
+
+                if book.status == new_status:
+                    return f"Статус книги уже установлен на '{new_status}'."
+
                 book.status = new_status
                 self.save_books()
                 return f"Статус книги изменен на '{new_status}'."
