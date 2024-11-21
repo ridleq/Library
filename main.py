@@ -1,10 +1,10 @@
 from crud.library import Library
 
 
-def main():
+def main():  # Вызов основной функции приложения.
     library = Library()
 
-    while True:
+    while True:  # Выбор действий.
         print("\n1| Добавить книгу")
         print("2| Удалить книгу")
         print("3| Найти книгу")
