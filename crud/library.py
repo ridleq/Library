@@ -172,14 +172,22 @@ class Library:
         if not self.books:
             return "\nСписок книг пуст."
 
-        output: str = "\nСписок всех книг:\n"
+        output = (
+            f"\n{'ID':<5} | "
+            f"{'Название':<30} | "
+            f"{'Автор':<20} | "
+            f"{'Год':<5} | "
+            f"{'Статус':<10}\n"
+        )
+        output += "-" * 80 + "\n"
+
         for book in self.books:
             output += (
-                        f"{book.id} | "
-                        f"{book.title} "
-                        f"{book.author} "
-                        f"({book.year}) "
-                        f"{book.status} \n"
-                    )
+                f"{book.id:<5} | "
+                f"{book.title:<30} | "
+                f"{book.author:<20} | "
+                f"{book.year:<5} | "
+                f"{book.status:<10}\n"
+            )
 
         return output
