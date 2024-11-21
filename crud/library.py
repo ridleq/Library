@@ -10,7 +10,7 @@ class Library:
         self.filename = filename
         self.books: List[Book] = self.load_books()
 
-    def load_books(self):
+    def load_books(self) -> List[Book]:
         try:
             with open(self.filename, 'r') as file:
                 books_data = json.load(file)
@@ -24,11 +24,14 @@ class Library:
         except (FileNotFoundError, json.JSONDecodeError):
             return []
 
-    def save_books(self):
+    def save_books(self) -> None:
         with open(self.filename, 'w') as file:
             json.dump([book.to_dict() for book in self.books], file, indent=4)
 
-    def add_book(self, title, author, year, status='в наличии'):
+    def add_book(
+        self, title: str, author: str,
+        year: int, status: str = 'в наличии'
+    ) -> str:
         for book in self.books:
             if book.title == title and book.author == author:
                 return f"\nКнига '{title}' автора {author} уже существует."
@@ -40,8 +43,8 @@ class Library:
         self.save_books()
         return f"\nКнига '{title}' успешно добавлена."
 
-    def delete_book(self, book_id):
-        book_to_remove = next(
+    def delete_book(self, book_id: int) -> str:
+        book_to_remove: Optional[Book] = next(
             (book for book in self.books if book.id == book_id),
             None
             )
@@ -53,8 +56,8 @@ class Library:
         else:
             return "Книга не найдена!"
 
-    def search_book(self, book_search):
-        results = []
+    def search_book(self, book_search: str) -> List[str]:
+        results: List[str] = []
         for book in self.books:
             if (book_search.lower() in book.title.lower() or
                     book_search.lower() in book.author.lower() or
@@ -69,7 +72,7 @@ class Library:
 
         return results if results else ["Книга не найдена."]
 
-    def update_book_status(self, book_id):
+    def update_book_status(self, book_id: int) -> str:
         for book in self.books:
             if book.id == book_id:
                 new_status = input("Введите новый статус: ")
@@ -79,11 +82,11 @@ class Library:
 
         return "Книга не найдена."
 
-    def list_books(self):
+    def list_books(self) -> str:
         if not self.books:
             return "\nСписок книг пуст."
 
-        output = "\nСписок всех книг:\n"
+        output: str = "\nСписок всех книг:\n"
         for book in self.books:
             output += (
                         f"{book.id} | "

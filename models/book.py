@@ -12,7 +12,7 @@ class Book:
         self.status = status
 
     # Метод преобразования объекта в словарь для сохранения в Json.
-    def to_dict(self):
+    def to_dict(self) -> dict:
         return {
             'id': self.id,  # Уникальный id.
             'title': self.title,  # Название книги.
